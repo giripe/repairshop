@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="js/jquery-2.2.0.min.js"></script>
+    <script>
+        window.$ = window.jQuery = require('./js/jquery.min.js');
+    </script>
+    <meta charset="UTF-8">
+    <title>Список клиентов</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/signin.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-10 ">
+                <h1>Заказчики</h1>
+            </div>
+            <div class="col-xs-2 pull-right">
+                <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#addCustomerModal">
+                    Добавить клиента
+                </button>
+            </div>
+        </div>
+        <div id="tableArea"></div>
+    </div>
+
+    <!--ADD CUSTOMER MODAL-->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="form-signin" id="addCustomerForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="addTitle">Добавление клиента</h4>
+                    </div>
+                    <div class="modal-body">
+                            <label for="name" class="sr-only">Имя клиента</label>
+                            <input type="text" id="name" class="form-control" placeholder="Имя клиента" required autofocus="" name="name">
+                            <label for="phone" class="sr-only">Телефон</label>
+                            <input type="text" id="phone" class="form-control" placeholder="Телефон" required name="phone">
+                            <label for="device" class="sr-only">Устройство</label>
+                            <input type="text" id="device" class="form-control" placeholder="Устройство" name="device">
+                            <label for="problem" class="sr-only">Проблема</label>
+                            <input type="text" id="problem" class="form-control" placeholder="Проблема" required name="problem">
+                            Статус: <input type="radio" name="is_ready" value="0" checked> Не готово
+                            <input type="radio" name="is_ready" value="1"> Готово
+                            <label for="warranty" class="sr-only">Гарантия</label>
+                            <input type="text" id="warranty" class="form-control" placeholder="Гарантия" name="warranty">
+                            <label for="time_limit" class="sr-only">Срок выполнения</label>
+                            <input type="text" name="time_limit" id="time_limit" class="form-control" placeholder="Срок выполнения">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-success" id="modalBtn">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--UPDATE CUSTOMER INFORMATION MODAL-->
+    <div class="modal fade" id="updCustomer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form class="form-signin" id="updForm">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="updTitle">Изменение данных</h4>
+                    </div>
+                    <div class="modal-body">
+                        <input type="text" id="idUpd" name="id" hidden>
+                        <label for="nameUpd" class="sr-only">Имя клиента</label>
+                        <input type="text" id="nameUpd" class="form-control" placeholder="Имя клиента" required autofocus="" name="name">
+                        <label for="phoneUpd" class="sr-only">Телефон</label>
+                        <input type="text" id="phoneUpd" class="form-control" placeholder="Телефон" required name="phone">
+                        <label for="deviceUpd" class="sr-only">Устройство</label>
+                        <input type="text" id="deviceUpd" class="form-control" placeholder="Устройство" name="device">
+                        <label for="problemUpd" class="sr-only">Проблема</label>
+                        <input type="text" id="problemUpd" class="form-control" placeholder="Проблема" required name="problem">
+                        Статус: <input type="radio" name="is_ready" value="0" checked> Не готово
+                        <input type="radio" name="is_ready" value="1"> Готово
+                        <label for="warrantyUpd" class="sr-only">Гарантия</label>
+                        <input type="text" id="warrantyUpd" class="form-control" placeholder="Гарантия" name="warranty">
+                        <label for="time_limitUpd" class="sr-only">Срок выполнения</label>
+                        <input type="text" name="time_limit" id="time_limitUpd" class="form-control" placeholder="Срок выполнения">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="submit" class="btn btn-success" id="updCustomerBtn">Обновить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="loadTable.js"></script>
+</body>
+</html>
+
