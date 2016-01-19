@@ -14,6 +14,28 @@ $(function() {
 
     db.getAllCustomers(function (customers) {
         if (customers !== null) {
+            ldb.getNoPosted(function(err, docs) {
+                for (var i = 0; i < docs.length; i++) {
+                    delete docs[i]._id;
+                    if (docs[i].id === undefined) {
+                        db.addCustomer(docs[i], function(err, ret) {
+                            if (err) {
+                                console.log('error: ' + err.message);
+                            } else {
+                                console.log('insert id:' + ret.insertId);
+                            }
+                        });
+                    } else {
+                        db.updateCustomer(docs[i], function(err, ret) {
+                            if (err) {
+                                console.log('error: ' + err.message);
+                            } else {
+                                console.log('changed rows: ' + ret.changedRows);
+                            }
+                        });
+                    }
+                }
+            });
             table(customers);
             ldb.reload(customers);
         } else {

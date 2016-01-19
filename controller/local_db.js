@@ -1,9 +1,14 @@
 var Datastore = require('nedb'),
 db = new Datastore({filename: 'customers.db', autoload: true});
 
-var counter = 1000000;
+var getAll, getById, del, add, update, getNoPosted, reload;
 
-var getAll, getById, del, add, update, sync, reload;
+add = function(el, callback) {
+	el.is_posted = el.is_posted === 1 ? 1 : 0;
+	db.insert(el, function(err, data) {
+		callback(data);
+	});
+};
 
 getAll = function(callback) {
 	db.find({}, function(err, docs) {
@@ -20,14 +25,6 @@ getById = function(id, callback) {
 del = function(time, callback) {
 	db.remove({date: time}, function(err, numRows) {
 		callback(numRows);
-	});
-};
-
-add = function(el, callback) {
-	el.id = ++counter;
-	el.is_posted = el.is_posted === 1 ? 1 : 0;
-	db.insert(el, function(err, data) {
-		callback(data);
 	});
 };
 
@@ -49,12 +46,19 @@ reload = function(arr) {
 	});
 };
 
+getNoPosted = function(callback) {
+	db.find({is_posted: 0}, function(err, docs) {
+		callback(err, docs);
+	});
+};
+
 exports.getAll = getAll;
 exports.getById = getById;
 exports.del = del;
 exports.add = add;
 exports.update = update;
 exports.reload = reload;
+exports.getNoPosted = getNoPosted;
 
 
 //{"id":"1000001","date":"1453242077205","name":"Michael Jackson","phone":"=777777777",
