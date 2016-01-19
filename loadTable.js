@@ -3,7 +3,8 @@
  */
 var $ = require('jQuery');
 var db = require('./controller/db_controller');
-var lok = require('./controller/json_controller')
+
+var ldb = require('./controller/local_db');
 
 
 $(function() {
@@ -14,9 +15,9 @@ $(function() {
     db.getAllCustomers(function (customers) {
         if (customers !== null) {
             table(customers);
-            lok.reloadFile(customers);
+            ldb.reload(customers);
         } else {
-            lok.getAllCustomers(function(arr) {
+            ldb.getAll(function(arr) {
                 table(arr);
             });
         }
@@ -31,12 +32,18 @@ function bindTr() {
             $(this).addClass('active-tr');//текущая тр
             var thArray = $(this).children();
             thArray.each(function(i, field){
-                setData($(this).attr('name')+'Upd', $(this).text());
+                if ($(this).data('name') === 'date') {
+                    setData($(this).data('name') + 'Upd', $(this).data('timestamp'));
+                } else {
+                    setData($(this).data('name')+'Upd', $(this).text());
+                }
             });
             $('#updCustomer').modal();
         }
     });
 }
+
+
 
 function bindCustomerForm() {
     $('#addCustomerForm').submit(function() {
@@ -44,10 +51,10 @@ function bindCustomerForm() {
         $.each($('#addCustomerForm').serializeArray(), function(i, field) {
             customer[field.name] = field.value;
         });
-        customer['date'] = Date.now();
+        customer.date = Date.now();
         db.addCustomer(customer, function(err, row) {
             if (err) {
-                lok.addCustomer(customer);
+                ldb.add(customer, function(data){});
             } else {
                 console.log(row);
             }
@@ -61,9 +68,9 @@ function bindUpdCustomerForm() {
         $.each($('#updForm').serializeArray(), function(i, field) {
             customer[field.name] = field.value;
         });
-        db.getCustomerById(customer.id, function(err,row) {
-            if (err) {
-                lok.updateCustomer(customer);
+        db.getCustomerById(customer.id, function(row) {
+            if (row === null) {
+                ldb.update(customer, function(err,numRows) {});
             } else {
                 db.updateCustomer(jQuery.extend(row[0], customer), function (err, res) {
                     console.log(res);
@@ -77,7 +84,6 @@ function table(customers) {
     //append делать минимально
     //склеить в одну строку и вставить
     var table = $('<table>');
-    //'<th>#</th><th'
     table.addClass('table table-striped');
     var rowHead = $('<tr>');
     rowHead.append($('<th>').text('#'));
@@ -95,16 +101,16 @@ function table(customers) {
 
     for (var i = 0; i < customers.length; i++) {
         var row = $('<tr id="'+ customers[i].id +'">');
-        row.append($('<td name="id">').text(customers[i].id));
-        row.append($('<td name="name">').text(customers[i].name));
-        row.append($('<td name="phone">').text(customers[i].phone));
-        row.append($('<td name="device">').text(customers[i].device !== null ? customers[i].device : ''));
-        row.append($('<td name="problem">').text(customers[i].problem));
-        row.append($('<td name="master">').text(customers[i].master !== null ? customers[i].master : ''));
-        row.append($('<td name="time_limit">').text(customers[i].time_limit !== null ? customers[i].time_limit : ''));
-        row.append($('<td name="status">').text(customers[i].is_ready == true ? 'Готов' : 'Не готов'));
-        row.append($('<td name="warranty">').text(customers[i].warranty !== null ? customers[i].warranty : ''));
-        row.append($('<td name="date">').text(getStringDate(customers[i].date)));
+        row.append($('<td data-name="id">').text(customers[i].id));
+        row.append($('<td data-name="name">').text(customers[i].name));
+        row.append($('<td data-name="phone">').text(customers[i].phone));
+        row.append($('<td data-name="device">').text(customers[i].device !== null ? customers[i].device : ''));
+        row.append($('<td data-name="problem">').text(customers[i].problem));
+        row.append($('<td data-name="master">').text(customers[i].master !== null ? customers[i].master : ''));
+        row.append($('<td data-name="time_limit">').text(customers[i].time_limit !== null ? customers[i].time_limit : ''));
+        row.append($('<td data-name="status">').text(customers[i].is_ready == true ? 'Готов' : 'Не готов'));
+        row.append($('<td data-name="warranty">').text(customers[i].warranty !== null ? customers[i].warranty : ''));
+        row.append($('<td data-name="date" data-timestamp="'+customers[i].date+'">').text(getStringDate(customers[i].date)));
         row.append($('<td>').html('<button class="btn btn-danger del-btn" type="button">Удалить</button>'));
         table.append(row);
     }
@@ -117,7 +123,11 @@ function table(customers) {
 function bindDelBtn() {
     $('.del-btn').click(function() {
         var tr = $(this).closest('tr');
-        db.deleteCustomer(tr.attr('id'), function(result) {
+        db.deleteCustomer(tr.attr('id'), function(err, result) {
+            if (err) {
+                var date = tr.find('td[data-timestamp]').data('timestamp');
+                ldb.del(date, function(err, numRows) {});
+            }
             tr.remove();
         });
     });

@@ -23,7 +23,12 @@ function getAllCustomers(callback) {
 
 function getCustomerById(id, callback) {
     connection.query("SELECT * FROM customers WHERE id = ?", id, function (err, rows) {
-        callback(err, rows);
+        if (err) {
+            callback(null);
+        } else {
+            callback(rows);
+        }
+        //callback(err, rows);
     });
 }
 
@@ -58,11 +63,7 @@ function updateCustomer(customer, callback) {
 function deleteCustomer(id, callback) {
     connection.query(
         'DELETE FROM `customers` WHERE id = ?', id, function(err, result) {
-        if (err) {
-            throw err;
-        } else {
-            callback(result.changedRows);
-        }
+            callback(err, result);
     });
 }
 
@@ -71,15 +72,3 @@ exports.getCustomerById = getCustomerById;
 exports.addCustomer = addCustomer;
 exports.deleteCustomer = deleteCustomer;
 exports.updateCustomer = updateCustomer;
-
-//var customer = {name: 'Jhon', phone: '+123456789', problem: 'my problem'};
-//
-//addCustomer(customer, function(row) {
-//    console.log(row);
-//})
-
-//[
-//    {"name":"foo","value":"1"},
-//    {"name":"bar","value":"xxx"},
-//    {"name":"this","value":"hi"}
-//]
