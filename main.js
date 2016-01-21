@@ -19,7 +19,7 @@ app.on('ready', function() {
     });
 
     //webContents.reload(); перезагружает страничку
-    win.loadUrl('file://' + __dirname + '/main.html');
+    win.loadUrl('file://' + __dirname + '/html/login.html');
     win.openDevTools();
     win.on('close', function() {
         win = null

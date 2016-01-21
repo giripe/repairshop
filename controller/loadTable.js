@@ -2,13 +2,12 @@
  * Created by paul on 15.01.16.
  */
 var $ = require('jQuery');
-var db = require('./controller/db_controller');
-
-var ldb = require('./controller/local_db');
+var ldb = require('./../controller/local_db');
+var db = require('./../controller/db_controller');
 
 
 $(function() {
-    window.$ = window.jQuery = require('./js/jquery.min.js');
+    window.$ = window.jQuery = require('./../js/jquery.min.js');
     bindCustomerForm();
     bindUpdCustomerForm();
 
@@ -44,7 +43,9 @@ $(function() {
             });
         }
     });
-    
+
+    $('#hello').append(localStorage.name);
+
 });
 
 function bindTr() {
@@ -74,6 +75,7 @@ function bindCustomerForm() {
             customer[field.name] = field.value;
         });
         customer.date = Date.now();
+        customer.master = localStorage.name;
         db.addCustomer(customer, function(err, row) {
             if (err) {
                 ldb.add(customer, function(data){});
