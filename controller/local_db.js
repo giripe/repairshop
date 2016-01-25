@@ -39,9 +39,7 @@ update = function(el, callback) {
 reload = function(arr) {
 	db.remove({}, {multi: true}, function(err, numRows) {
 		for (var i = 0; i < arr.length; i++) {
-			add(arr[i], function(a) {
-
-			});
+			add(arr[i], function(a) {});
 		}
 	});
 };
@@ -59,10 +57,3 @@ exports.add = add;
 exports.update = update;
 exports.reload = reload;
 exports.getNoPosted = getNoPosted;
-
-
-//{"id":"1000001","date":"1453242077205","name":"Michael Jackson","phone":"=777777777",
-// "device":"BlackBerry","problem":"Keyboard is bad","is_ready":"1","warranty":"","time_limit":""}
-
-//{"name":"123","phone":"321","device":"","problem":"11111","is_ready":"0",
-// "warranty":"","time_limit":"","date":1453242077205,"id":1000001,"is_posted":0,"_id":"Jwj7YbmJwJJPeWOv"}

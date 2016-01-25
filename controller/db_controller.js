@@ -28,11 +28,11 @@ function getCustomerById(id, callback) {
         } else {
             callback(rows);
         }
-        //callback(err, rows);
     });
 }
 
 function addCustomer(customer, callback) {
+    customer.is_posted = 1;
     connection.query('INSERT INTO `customers` SET ?', customer, function(err, res) {
         callback(err, res);
     });
